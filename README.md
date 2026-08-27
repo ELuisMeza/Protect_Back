@@ -118,7 +118,11 @@ JWT, cookie de autenticación y lectura del token desde la cookie (además del h
 
 ### `config`
 
-CORS, cadena de seguridad e inicialización de datos de ejemplo (productos seed si la tabla está vacía).
+CORS y cadena de seguridad.
+
+### `seed`
+
+Carga de categorías y productos de catálogo. Se ejecuta con `--seed`.
 
 ### `exception`
 
@@ -172,7 +176,45 @@ En Windows:
 .\mvnw.cmd spring-boot:run
 ```
 
-El frontend por defecto se espera en `http://localhost:5175` (CORS).
+## Migración
+
+Crea las tablas de la base de datos (`users`, `categories`, `products`, `quotations`).
+
+```bash
+./mvnw spring-boot:run -Dspring-boot.run.arguments=--migrate
+```
+
+Windows:
+
+```bash
+.\mvnw.cmd spring-boot:run "-Dspring-boot.run.arguments=--migrate"
+```
+
+Con el JAR:
+
+```bash
+java -jar target/protec-0.0.1-SNAPSHOT.jar --migrate
+```
+
+## Seeder
+
+Crea categorías y una cantidad de productos de catálogo.
+
+```bash
+./mvnw spring-boot:run -Dspring-boot.run.arguments=--seed
+```
+
+Windows:
+
+```bash
+.\mvnw.cmd spring-boot:run "-Dspring-boot.run.arguments=--seed"
+```
+
+Con el JAR:
+
+```bash
+java -jar target/protec-0.0.1-SNAPSHOT.jar --seed
+```
 
 ## Variables de entorno
 

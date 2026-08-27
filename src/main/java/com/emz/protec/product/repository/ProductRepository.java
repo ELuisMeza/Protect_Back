@@ -17,4 +17,6 @@ public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpec
 			WHERE p.id = :id AND p.active = true
 			""")
 	Optional<Product> findByIdAndActiveTrue(@Param("id") Long id);
+
+	boolean existsByNameIgnoreCase(String name);
 }

@@ -34,12 +34,13 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import com.emz.protec.security.CookieBearerTokenResolver;
 import com.emz.protec.security.JwtAuthConverter;
 import com.emz.protec.security.JwtProperties;
+import com.emz.protec.whatsapp.GreenApiProperties;
 import com.nimbusds.jose.jwk.source.ImmutableSecret;
 
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
-@EnableConfigurationProperties(JwtProperties.class)
+@EnableConfigurationProperties({ JwtProperties.class, GreenApiProperties.class })
 public class SecurityConfig {
 
 	private final JwtProperties jwtProperties;

@@ -17,8 +17,6 @@ public record ProductRequest(
 		@DecimalMin(value = "0.0", inclusive = true, message = "El precio no puede ser negativo")
 		BigDecimal price,
 
-		String imageUrl,
-
 		String specs,
 
 		Boolean active

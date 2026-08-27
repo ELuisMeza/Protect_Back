@@ -2,11 +2,15 @@ package com.emz.protec.category.controller;
 
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.emz.protec.category.dto.CategoryRequest;
 import com.emz.protec.category.dto.CategoryResponse;
 import com.emz.protec.category.service.CategoryService;
 
@@ -23,5 +27,11 @@ public class CategoryController {
 	@GetMapping
 	public ResponseEntity<List<CategoryResponse>> findAll() {
 		return ResponseEntity.ok(categoryService.findAll());
+	}
+
+	@PostMapping
+	public ResponseEntity<CategoryResponse> create(@RequestBody CategoryRequest request) {
+		CategoryResponse created = categoryService.create(request);
+		return ResponseEntity.status(HttpStatus.CREATED).body(created);
 	}
 }

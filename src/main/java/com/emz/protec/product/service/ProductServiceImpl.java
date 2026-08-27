@@ -1,7 +1,11 @@
 package com.emz.protec.product.service;
 
-import java.util.List;
+import java.util.Locale;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -9,14 +13,19 @@ import com.emz.protec.category.domain.Category;
 import com.emz.protec.category.repository.CategoryRepository;
 import com.emz.protec.exception.ResourceNotFoundException;
 import com.emz.protec.product.domain.Product;
+import com.emz.protec.product.dto.ProductPageResponse;
 import com.emz.protec.product.dto.ProductRequest;
 import com.emz.protec.product.dto.ProductResponse;
 import com.emz.protec.product.mapper.ProductMapper;
 import com.emz.protec.product.repository.ProductRepository;
+import com.emz.protec.product.repository.ProductSpecifications;
 
 @Service
 @Transactional
 public class ProductServiceImpl implements ProductService {
+
+	private static final int DEFAULT_PAGE = 1;
+	private static final int DEFAULT_LIMIT = 20;
 
 	private final ProductRepository productRepository;
 	private final CategoryRepository categoryRepository;
@@ -33,14 +42,31 @@ public class ProductServiceImpl implements ProductService {
 
 	@Override
 	@Transactional(readOnly = true)
-	public List<ProductResponse> findAll(Long categoryId) {
-		List<Product> products;
-		if (categoryId == null) {
-			products = productRepository.findByActiveTrueWithCategory();
-		} else {
-			products = productRepository.findByActiveTrueAndCategoryId(categoryId);
+	public ProductPageResponse findAll(Long categoryId, String search, Long page, Long limit) {
+		int pageNumber = page != null ? page.intValue() : DEFAULT_PAGE;
+		int pageSize = limit != null ? limit.intValue() : DEFAULT_LIMIT;
+		Specification<Product> spec = ProductSpecifications.active();
+		if (categoryId != null) {
+			spec = spec.and(ProductSpecifications.byCategory(categoryId));
 		}
-		return products.stream().map(productMapper::toResponse).toList();
+		if (search != null && !search.isBlank()) {
+			String searchPattern = "%" + search.trim().toLowerCase(Locale.ROOT) + "%";
+			spec = spec.and(ProductSpecifications.nameLike(searchPattern));
+		}
+
+		Page<Product> products = productRepository.findAll(
+				spec,
+				PageRequest.of(
+						pageNumber - 1,
+						pageSize,
+						Sort.by(Sort.Direction.ASC, Product::getName)));
+
+		return new ProductPageResponse(
+				products.map(productMapper::toResponse).getContent(),
+				products.getTotalElements(),
+				pageNumber,
+				pageSize,
+				products.getTotalPages());
 	}
 
 	@Override

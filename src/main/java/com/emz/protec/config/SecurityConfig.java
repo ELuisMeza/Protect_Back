@@ -31,6 +31,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import com.emz.protec.security.CookieBearerTokenResolver;
 import com.emz.protec.security.JwtAuthConverter;
 import com.emz.protec.security.JwtProperties;
 import com.nimbusds.jose.jwk.source.ImmutableSecret;
@@ -43,10 +44,15 @@ public class SecurityConfig {
 
 	private final JwtProperties jwtProperties;
 	private final JwtAuthConverter jwtAuthConverter;
+	private final CookieBearerTokenResolver cookieBearerTokenResolver;
 
-	public SecurityConfig(JwtProperties jwtProperties, JwtAuthConverter jwtAuthConverter) {
+	public SecurityConfig(
+			JwtProperties jwtProperties,
+			JwtAuthConverter jwtAuthConverter,
+			CookieBearerTokenResolver cookieBearerTokenResolver) {
 		this.jwtProperties = jwtProperties;
 		this.jwtAuthConverter = jwtAuthConverter;
+		this.cookieBearerTokenResolver = cookieBearerTokenResolver;
 	}
 
 	@Bean
@@ -57,12 +63,13 @@ public class SecurityConfig {
 				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				.authorizeHttpRequests(auth -> auth
 						.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-						.requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
+						.requestMatchers(HttpMethod.POST, "/api/auth/login", "/api/auth/logout").permitAll()
 						.requestMatchers(HttpMethod.GET, "/api/products", "/api/products/**").permitAll()
 						.requestMatchers(HttpMethod.GET, "/api/categories", "/api/categories/**").permitAll()
 						.requestMatchers(HttpMethod.POST, "/api/quotations").permitAll()
 						.anyRequest().hasRole("ADMIN"))
 				.oauth2ResourceServer(oauth2 -> oauth2
+						.bearerTokenResolver(cookieBearerTokenResolver)
 						.jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthConverter)));
 
 		return http.build();

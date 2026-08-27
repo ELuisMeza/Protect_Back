@@ -16,7 +16,6 @@ public class ProductMapper {
 				product.getCategory().getId(),
 				product.getCategory().getName(),
 				product.getPrice(),
-				product.getImageUrl(),
 				product.getSpecs(),
 				product.isActive());
 	}
@@ -25,7 +24,6 @@ public class ProductMapper {
 		return Product.builder()
 				.name(request.name().trim())
 				.price(request.price())
-				.imageUrl(blankToNull(request.imageUrl()))
 				.specs(blankToNull(request.specs()))
 				.active(request.active() == null || request.active())
 				.build();
@@ -34,7 +32,6 @@ public class ProductMapper {
 	public void updateEntity(Product product, ProductRequest request) {
 		product.setName(request.name().trim());
 		product.setPrice(request.price());
-		product.setImageUrl(blankToNull(request.imageUrl()));
 		product.setSpecs(blankToNull(request.specs()));
 		if (request.active() != null) {
 			product.setActive(request.active());

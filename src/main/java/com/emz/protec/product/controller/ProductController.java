@@ -1,7 +1,5 @@
 package com.emz.protec.product.controller;
 
-import java.util.List;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -15,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.emz.protec.product.dto.ProductPageResponse;
 import com.emz.protec.product.dto.ProductRequest;
 import com.emz.protec.product.dto.ProductResponse;
 import com.emz.protec.product.service.ProductService;
@@ -33,9 +32,12 @@ public class ProductController {
 	}
 
 	@GetMapping
-	public ResponseEntity<List<ProductResponse>> findAll(
-			@RequestParam(required = false) Long categoryId) {
-		return ResponseEntity.ok(productService.findAll(categoryId));
+	public ResponseEntity<ProductPageResponse> findAll(
+			@RequestParam(required = false) Long categoryId,
+			@RequestParam(required = false) String search,
+			@RequestParam(required = false) Long page,
+			@RequestParam(required = false) Long limit) {
+		return ResponseEntity.ok(productService.findAll(categoryId, search, page, limit));
 	}
 
 	@GetMapping("/{id}")

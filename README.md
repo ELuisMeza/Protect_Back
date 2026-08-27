@@ -122,7 +122,7 @@ CORS y cadena de seguridad.
 
 ### `seed`
 
-Carga de categorías y productos de catálogo. Se ejecuta con `--seed`.
+Crea el usuario admin del panel (si no existe), categorías y productos de catálogo. Se ejecuta con `--seed`.
 
 ### `exception`
 
@@ -198,7 +198,9 @@ java -jar target/protec-0.0.1-SNAPSHOT.jar --migrate
 
 ## Seeder
 
-Crea categorías y una cantidad de productos de catálogo.
+Crea el usuario admin del panel (si no existe), categorías y productos de catálogo.
+
+Usuario del panel: `admin` / `admin123`.
 
 ```bash
 ./mvnw spring-boot:run -Dspring-boot.run.arguments=--seed

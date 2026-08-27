@@ -15,10 +15,15 @@ public class SeedCommand implements ApplicationRunner {
 
 	private static final Logger log = LoggerFactory.getLogger(SeedCommand.class);
 
+	private final AdminUserSeeder adminUserSeeder;
 	private final CatalogSeeder catalogSeeder;
 	private final ConfigurableApplicationContext context;
 
-	public SeedCommand(CatalogSeeder catalogSeeder, ConfigurableApplicationContext context) {
+	public SeedCommand(
+			AdminUserSeeder adminUserSeeder,
+			CatalogSeeder catalogSeeder,
+			ConfigurableApplicationContext context) {
+		this.adminUserSeeder = adminUserSeeder;
 		this.catalogSeeder = catalogSeeder;
 		this.context = context;
 	}
@@ -29,7 +34,8 @@ public class SeedCommand implements ApplicationRunner {
 			return;
 		}
 
-		log.info("Ejecutando seeders de catálogo (--seed)");
+		log.info("Ejecutando seeders (--seed)");
+		adminUserSeeder.seed();
 		catalogSeeder.seed();
 		log.info("Seeders finalizados. Cerrando proceso.");
 		System.exit(SpringApplication.exit(context, () -> 0));
